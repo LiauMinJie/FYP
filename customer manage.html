@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Customer</title>
+    <!-- 连接外部 CSS 文件 -->
+    <link rel="stylesheet" href="customer.css">
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <header class="header">
+        <div class="logo">
+            <h1>Admin Dashboard</h1>
+        </div>
+        <div class="nav-links">
+            <a href="main_page.html" class="btn">Main Page</a>
+            <a href="change_delivery_product.html" class="btn">Change Delivery & Product</a>
+            <a href="customer_list.html" class="btn">Customer List</a>
+            <a href="view_order_product_list.html" class="btn">View Order & Product List</a>
+            <a href="change_order_status.html" class="btn">Change Status of Order List</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="form-container">
+            <h2 class="title">Add Customer</h2>
+            <form id="addCustomerForm" method="POST" action="add_customer.php">
+                <div class="input-group">
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="input-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="input-group">
+                    <label for="phone">Phone:</label>
+                    <input type="text" id="phone" name="phone">
+                </div>
+                <div class="input-group">
+                    <label for="address">Address:</label>
+                    <textarea id="address" name="address"></textarea>
+                </div>
+                <button type="submit" class="btn">Add Customer</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 连接外部 JavaScript 文件 -->
+    <script src="customer.js"></script>
+</body>
+</html>
