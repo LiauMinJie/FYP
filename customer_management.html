@@ -1,36 +1,211 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Customer Management</title>
-    <link rel="stylesheet" href="customer1.css">
+    <link rel="stylesheet" href="customer1.css" />
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-image: url('background.jpg'); /* 请替换为你实际的图片路径 */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 20px;
+            background-color: rgba(0, 0, 0, 0.85);
+            color: white;
+        }
+
+        .nav-links .btn {
+            margin-left: 10px;
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+
+        .container {
+            margin: 30px auto;
+            width: 80%;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .title {
+            text-align: center;
+            color: #007bff;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: bold;
+        }
+
+        .input-group input,
+        .input-group textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            border: none;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .action-btns button {
+            margin-right: 5px;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Customer Management</h2>
+    <header class="header">
+        <div class="logo">
+            <h1>Admin Dashboard</h1>
+        </div>
+        <div class="nav-links">
+            <a href="main_page.html" class="btn">Main Page</a>
+            <a href="change_delivery_product.html" class="btn">Change Delivery & Product</a>
+            <a href="customer_list.html" class="btn">Customer List</a>
+            <a href="view_order_product_list.html" class="btn">View Order & Product List</a>
+            <a href="change_order_status.html" class="btn">Change Status of Order List</a>
+        </div>
+    </header>
 
-        <!-- Add Customer Form -->
+    <div class="container">
+        <h2 class="title">Add Customer</h2>
         <form id="addForm">
-            <h3>Add New Customer</h3>
-            <label>Name:</label><input type="text" id="name" required><br>
-            <label>Email:</label><input type="email" id="email" required><br>
-            <label>Phone:</label><input type="text" id="phone"><br>
-            <label>Address:</label><textarea id="address"></textarea><br>
+            <div class="input-group">
+                <label>Name:</label>
+                <input type="text" name="name" required>
+            </div>
+            <div class="input-group">
+                <label>Email:</label>
+                <input type="email" name="email" required>
+            </div>
+            <div class="input-group">
+                <label>Phone:</label>
+                <input type="text" name="phone">
+            </div>
+            <div class="input-group">
+                <label>Address:</label>
+                <textarea name="address"></textarea>
+            </div>
             <button type="submit">Add Customer</button>
         </form>
 
-        <hr>
-
-        <!-- Customer Table -->
-        <h3>Customer List</h3>
+        <h2 class="title">Customer List</h2>
         <table id="customerTable">
             <thead>
-                <tr><th>Name</th><th>Email</th><th>Phone</th><th>Address</th><th>Actions</th></tr>
+                <tr>
+                    <th>Name</th><th>Email</th><th>Phone</th><th>Address</th><th>Actions</th>
+                </tr>
             </thead>
-            <tbody></tbody>
+            <tbody>
+                <!-- 自动生成用户列表 -->
+            </tbody>
         </table>
     </div>
 
-    <script src="customer1.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            loadCustomers();
+
+            document.getElementById("addForm").addEventListener("submit", function(e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+                fetch("add_customer.php", {
+                    method: "POST",
+                    body: formData
+                }).then(res => res.text())
+                  .then(() => {
+                      this.reset();
+                      loadCustomers();
+                  });
+            });
+        });
+
+        function loadCustomers() {
+            fetch("get_customers.php")
+                .then(res => res.json())
+                .then(data => {
+                    const tbody = document.querySelector("#customerTable tbody");
+                    tbody.innerHTML = "";
+                    data.forEach(c => {
+                        tbody.innerHTML += `
+                            <tr>
+                                <td>${c.name}</td>
+                                <td>${c.email}</td>
+                                <td>${c.phone}</td>
+                                <td>${c.address}</td>
+                                <td class="action-btns">
+                                    <button onclick="editCustomer(${c.id}, '${c.name}', '${c.email}', '${c.phone}', '${c.address}')">Edit</button>
+                                    <button onclick="deleteCustomer(${c.id})">Delete</button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                });
+        }
+
+        function deleteCustomer(id) {
+            if (confirm("Are you sure?")) {
+                fetch(`delete_customer.php?id=${id}`, { method: "GET" })
+                    .then(() => loadCustomers());
+            }
+        }
+
+        function editCustomer(id, name, email, phone, address) {
+            const newName = prompt("New name:", name);
+            const newEmail = prompt("New email:", email);
+            const newPhone = prompt("New phone:", phone);
+            const newAddress = prompt("New address:", address);
+            if (newName && newEmail) {
+                fetch("update_customer.php", {
+                    method: "POST",
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        id, name: newName, email: newEmail,
+                        phone: newPhone, address: newAddress
+                    })
+                }).then(() => loadCustomers());
+            }
+        }
+    </script>
 </body>
 </html>
