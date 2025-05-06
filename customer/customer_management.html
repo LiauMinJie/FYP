@@ -99,7 +99,7 @@
             <h1>Admin Dashboard</h1>
         </div>
         <div class="nav-links">
-            <a href="main_page.html" class="btn">Main Page</a>
+            <a href="main.html" class="btn">Main Page</a>
             <a href="change_delivery_product.html" class="btn">Change Delivery & Product</a>
             <a href="customer_list.html" class="btn">Customer List</a>
             <a href="view_order_product_list.html" class="btn">View Order & Product List</a>
@@ -149,7 +149,7 @@
             document.getElementById("addForm").addEventListener("submit", function(e) {
                 e.preventDefault();
                 const formData = new FormData(this);
-                fetch("add_customer.php", {
+                fetch("add_customers.php", {
                     method: "POST",
                     body: formData
                 }).then(res => res.text())
@@ -185,7 +185,7 @@
 
         function deleteCustomer(id) {
             if (confirm("Are you sure?")) {
-                fetch(`delete_customer.php?id=${id}`, { method: "GET" })
+                fetch(`delete_customers.php?id=${id}`, { method: "GET" })
                     .then(() => loadCustomers());
             }
         }
@@ -196,7 +196,7 @@
             const newPhone = prompt("New phone:", phone);
             const newAddress = prompt("New address:", address);
             if (newName && newEmail) {
-                fetch("update_customer.php", {
+                fetch("update_customers.php", {
                     method: "POST",
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
